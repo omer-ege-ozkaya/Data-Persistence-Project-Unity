@@ -6,6 +6,8 @@ public class SingletonManager : MonoBehaviour
 {
     public static SingletonManager instance;
 
+    public string username;
+
     private void Awake()
     {
         if (instance == null)
