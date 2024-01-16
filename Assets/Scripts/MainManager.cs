@@ -12,13 +12,14 @@ public class MainManager : MonoBehaviour
 
     public Text ScoreText;
     public GameObject GameOverText;
+
+    public Text BestScoreText;
     
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
-    
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +37,10 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        // For displaying name
+        SingletonManager.instance.LoadBestScore();
+        AddPoint(0);
     }
 
     private void Update()
@@ -65,7 +70,24 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        string username = SingletonManager.instance.username;
+        ScoreText.text = $"Score : {username} : {m_Points}";
+        CheckBestScore();
+    }
+
+    void CheckBestScore()
+    {
+        int bestScore = SingletonManager.instance.bestScore;
+
+        if (m_Points > bestScore)
+        {
+            SingletonManager.instance.bestScoreUsername = SingletonManager.instance.username;
+            SingletonManager.instance.bestScore = m_Points;
+            SingletonManager.instance.SaveBestScore();
+        }
+        string bestScoreUsername = SingletonManager.instance.bestScoreUsername;
+        bestScore = SingletonManager.instance.bestScore;
+        BestScoreText.text = $"Best Score : {bestScoreUsername} : {bestScore}";
     }
 
     public void GameOver()
